@@ -137,6 +137,9 @@ export class PieChartCtrl extends MetricsPanelCtrl {
   }
 
   formatValue(value) {
+    if (value === "" || value == 0) {
+      return value;
+    }
     var decimalInfo = this.getDecimalsForValue(value);
     var formatFunc = kbn.valueFormats[this.panel.format];
     if (formatFunc) {

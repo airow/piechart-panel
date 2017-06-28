@@ -165,9 +165,9 @@ angular.module('grafana.directives').directive('piechartLegend', function(popove
             if (panel.legend.values) {
               html += '<div class="graph-legend-value">' + ctrl.formatValue(value) + '</div>';
             }
-            if (total) {
+            if (value && total) {
               var pvalue = ((value / total) * 100).toFixed(2) + '%';
-              html += '<div class="graph-legend-value">' + pvalue +'</div>';
+              html += '<div class="graph-legend-value">' + pvalue + '</div>';
             }
           }
 
