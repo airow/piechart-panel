@@ -113,10 +113,18 @@ angular.module('grafana.directives').directive('piechartLegend', function(popove
         if (tableLayout) {
           var header = '<tr><th colspan="2" style="text-align:left"></th>';
           if (panel.legend.values) {
-            header += '<th class="pointer">values</th>';
+            if (panel.legend.label) {
+              header += `<th class="pointer">${panel.legend.label}</th>`;
+            } else {
+              header += '<th class="pointer">values</th>';
+            }
           }
           if (panel.legend.percentage) {
-            header += '<th class="pointer">percentage</th>';
+            if (panel.legend.percentageLabel) {
+              header += `<th class="pointer">${panel.legend.percentageLabel}</th>`;
+            } else {
+              header += '<th class="pointer">percentage</th>';
+            }
           }
           header += '</tr>';
           $container.append($(header));
@@ -157,7 +165,15 @@ angular.module('grafana.directives').directive('piechartLegend', function(popove
           html += '</span>';
 
           html += '<span class="graph-legend-alias" style="float:none;">';
-          html += '<a>' + series.label + '</a>';
+
+          // if (panel.legend.label) {
+          //   //html += `<th class="pointer">${panel.legend.label}</th>`;
+          //   html += '<a>' + series.label.replace(panel.legend.label, '') + '</a>';
+          // } else {
+          //   html += '<a>' + series.label + '</a>';
+          // }
+          html += '<a>' + series.label.replace(panel.legend.label, '') + '</a>';
+
           html += '</span>';
 
           if (showValues && tableLayout) {
