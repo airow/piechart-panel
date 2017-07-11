@@ -1,13 +1,13 @@
 {
   "type": "panel",
-  "name": "Pie Chart",
-  "id": "grafana-piechart-panel",
+  "name": "Teld Pie Chart",
+  "id": "teld-piechart-panel",
 
   "info": {
-    "description": "Pie chart panel for grafana",
+    "description": "Pie chart panel for teld",
     "author": {
-      "name": "Grafana Labs",
-      "url": "http://grafana.com"
+      "name": "Teld Labs",
+      "url": "http://teld.cn"
     },
     "keywords": ["piechart", "panel"],
     "logos": {
