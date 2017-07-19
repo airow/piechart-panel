@@ -103,8 +103,10 @@ export default function link(scope, elem, attrs, ctrl) {
       var percent = parseFloat(item.series.percent).toFixed(2);
       var formatted = ctrl.formatValue(item.series.data[0][1]);
 
+      let label = item.series.label.replace(`[:]${panel.legend.label}`, '')
+
       body = '<div class="graph-tooltip-small"><div class="graph-tooltip-time">';
-      body += '<div class="graph-tooltip-value">' + item.series.label + ': ' + formatted;
+      body += '<div class="graph-tooltip-value">' + label + ': ' + formatted;
       body += " (" + percent + "%)" + '</div>';
       body += "</div></div>";
 

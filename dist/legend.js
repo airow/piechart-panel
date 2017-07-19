@@ -179,7 +179,7 @@ System.register(['angular', 'app/core/utils/kbn', 'jquery', 'jquery.flot', 'jque
                 // } else {
                 //   html += '<a>' + series.label + '</a>';
                 // }
-                html += '<a>' + series.label.replace(panel.legend.label, '') + '</a>';
+                html += '<a>' + series.label.replace('[:]' + panel.legend.label, '') + '</a>';
 
                 html += '</span>';
 

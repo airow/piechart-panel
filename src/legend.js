@@ -172,7 +172,7 @@ angular.module('grafana.directives').directive('piechartLegend', function(popove
           // } else {
           //   html += '<a>' + series.label + '</a>';
           // }
-          html += '<a>' + series.label.replace(panel.legend.label, '') + '</a>';
+          html += '<a>' + series.label.replace(`[:]${panel.legend.label}`, '') + '</a>';
 
           html += '</span>';
 
