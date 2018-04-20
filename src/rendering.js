@@ -92,7 +92,14 @@ export default function link(scope, elem, attrs, ctrl) {
 
     elem.html(plotCanvas);
 
-    $.plot(plotCanvas, ctrl.data, options);
+    try {
+      $.plot(plotCanvas, ctrl.data, options);
+    } catch (error) {
+      if (error.message === "Invalid dimensions for plot, width = 0, height = 0") {
+        return;
+      }
+    }
+
     plotCanvas.bind("plothover", function (event, pos, item) {
       if (!item) {
         $tooltip.detach();
