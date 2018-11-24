@@ -189,7 +189,9 @@ System.register(['angular', 'app/core/utils/kbn', 'jquery', 'jquery.flot', 'jque
                     html += '<div class="graph-legend-value">' + ctrl.formatValue(value) + '</div>';
                   }
                   if (value && total) {
-                    var pvalue = (value / total * 100).toFixed(2) + '%';
+                    var pv = value / total * 100;
+                    pv = pv > 100 ? 100 : pv;
+                    var pvalue = pv.toFixed(2) + '%';
                     html += '<div class="graph-legend-value">' + pvalue + '</div>';
                   }
                 }
