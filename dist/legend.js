@@ -1,20 +1,23 @@
 'use strict';
 
-System.register(['angular', 'app/core/utils/kbn', 'jquery', 'jquery.flot', 'jquery.flot.time'], function (_export, _context) {
+System.register(['angular', 'lodash', 'app/core/utils/kbn', 'jquery', 'jquery.flot', 'jquery.flot.time'], function (_export, _context) {
   "use strict";
 
-  var angular, kbn, $;
+  var angular, _, kbn, $;
+
   return {
     setters: [function (_angular) {
       angular = _angular.default;
+    }, function (_lodash) {
+      _ = _lodash.default;
     }, function (_appCoreUtilsKbn) {
       kbn = _appCoreUtilsKbn.default;
     }, function (_jquery) {
       $ = _jquery.default;
     }, function (_jqueryFlot) {}, function (_jqueryFlotTime) {}],
     execute: function () {
-      //import _ from  'lodash';
-      angular.module('grafana.directives').directive('piechartLegend', function (popoverSrv, $timeout) {
+
+      angular.module('grafana.directives').directive('piechartLegend', function (popoverSrv, $timeout, variableSrv) {
         return {
           link: function link(scope, elem) {
             var $container = $('<section class="graph-legend"></section>');
@@ -133,6 +136,13 @@ System.register(['angular', 'app/core/utils/kbn', 'jquery', 'jquery.flot', 'jque
                     header += '<th class="pointer">percentage</th>';
                   }
                 }
+                if (panel.legend.totalPercentage) {
+                  if (panel.legend.totalPercentageLabel) {
+                    header += '<th class="pointer">' + panel.legend.totalPercentageLabel + '</th>';
+                  } else {
+                    header += '<th class="pointer">总占比</th>';
+                  }
+                }
                 header += '</tr>';
                 $container.append($(header));
               }
@@ -193,6 +203,28 @@ System.register(['angular', 'app/core/utils/kbn', 'jquery', 'jquery.flot', 'jque
                     pv = pv > 100 ? 100 : pv;
                     var pvalue = pv.toFixed(2) + '%';
                     html += '<div class="graph-legend-value">' + pvalue + '</div>';
+                  }
+
+                  if (panel.legend.totalPercentage) {
+                    var denVarName = panel.legend.totalDenominator;
+                    // var denValue = variableSrv.templateSrv.replace(`$${denVarName}`);
+                    var denValue = _.find(variableSrv.variables, { name: "SumDL" }).query;
+                    denValue = +denValue;
+                    if (false === _.isNaN(denValue)) {
+                      var pvden = value / denValue * 100;
+                      if (pvden === Infinity) {
+                        html += '<div class="graph-legend-value"> Infinity </div>';
+                      } else {
+                        pvden = pvden > 100 ? 100 : pvden;
+                        series.totalpercent = pvden;
+                        ctrl.tooltips = ctrl.tooltips || {};
+                        var pvalueden = pvden.toFixed(2) + '%';
+                        ctrl.tooltips[series.label] = pvalueden;
+                        html += '<div class="graph-legend-value">' + pvalueden + '</div>';
+                      }
+                    } else {
+                      html += '<div class="graph-legend-value">/</div>';
+                    }
                   }
                 }
 

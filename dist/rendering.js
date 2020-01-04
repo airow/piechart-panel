@@ -29,6 +29,13 @@ System.register(['lodash', 'jquery', 'jquery.flot', 'jquery.flot.pie'], function
         height -= 5; // padding
         height -= panel.title ? 24 : 9; // subtract panel title bar
 
+        var offset = 0;
+        if (ctrl.fullscreen && ctrl.panel.allowViewModeFilter) {
+          var querybarHeight = $(".teld-querybar-panel").height() || 0;
+          var teldFilterHeight = $("panel-plugin-teld-filter-panel .panel-container").height() || 0;
+          offset = querybarHeight + teldFilterHeight;
+        }
+        height -= offset;
         elem.css('height', height + 'px');
 
         return true;
@@ -114,12 +121,24 @@ System.register(['lodash', 'jquery', 'jquery.flot', 'jquery.flot.pie'], function
         var body;
         var percent = parseFloat(item.series.percent).toFixed(2);
         var formatted = ctrl.formatValue(item.series.data[0][1]);
-
         var label = item.series.label.replace('[:]' + panel.legend.label, '');
 
         body = '<div class="graph-tooltip-small"><div class="graph-tooltip-time">';
         body += '<div class="graph-tooltip-value">' + label + ': ' + formatted;
-        body += " (" + percent + "%)" + '</div>';
+        if (ctrl.panel.legend.totalPercentage) {
+          var totalpercent = ctrl.tooltips[label];
+          if (false === _.isNil(totalpercent)) {
+            if (ctrl.panel.legend.percentage) {
+              body += '(' + (ctrl.panel.legend.percentageLabel || 'percentage') + ':' + percent + '%, ' + (ctrl.panel.legend.totalPercentageLabel || '总占比') + ':' + totalpercent + ')';
+            } else {
+              body += " (" + totalpercent + ")";
+            }
+          }
+        } else {
+          body += " (" + percent + "%)";
+        }
+
+        body += '</div>';
         body += "</div></div>";
 
         $tooltip.html(body).place_tt(pos.pageX + 20, pos.pageY);

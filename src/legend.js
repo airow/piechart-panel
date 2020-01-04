@@ -1,11 +1,11 @@
 import angular from 'angular';
-//import _ from  'lodash';
+import _ from  'lodash';
 import kbn from 'app/core/utils/kbn';
 import $ from  'jquery';
 import 'jquery.flot';
 import 'jquery.flot.time';
 
-angular.module('grafana.directives').directive('piechartLegend', function(popoverSrv, $timeout) {
+angular.module('grafana.directives').directive('piechartLegend', function (popoverSrv, $timeout, variableSrv) {
   return {
     link: function(scope, elem) {
       var $container = $('<section class="graph-legend"></section>');
@@ -126,6 +126,13 @@ angular.module('grafana.directives').directive('piechartLegend', function(popove
               header += '<th class="pointer">percentage</th>';
             }
           }
+          if (panel.legend.totalPercentage) {
+            if (panel.legend.totalPercentageLabel) {
+              header += `<th class="pointer">${panel.legend.totalPercentageLabel}</th>`;
+            } else {
+              header += '<th class="pointer">总占比</th>';
+            }
+          }
           header += '</tr>';
           $container.append($(header));
         }
@@ -186,6 +193,28 @@ angular.module('grafana.directives').directive('piechartLegend', function(popove
               pv = pv > 100 ? 100 : pv;
               var pvalue = (pv).toFixed(2) + '%';
               html += '<div class="graph-legend-value">' + pvalue + '</div>';
+            }
+
+            if (panel.legend.totalPercentage) {
+              var denVarName = panel.legend.totalDenominator;
+              // var denValue = variableSrv.templateSrv.replace(`$${denVarName}`);
+              var denValue = _.find(variableSrv.variables, { name: "SumDL" }).query;
+              denValue = (+denValue);
+              if (false === _.isNaN(denValue)) {
+                var pvden = (value / denValue) * 100;
+                if (pvden === Infinity) {
+                  html += '<div class="graph-legend-value"> Infinity </div>';
+                } else {
+                  pvden = pvden > 100 ? 100 : pvden;
+                  series.totalpercent = pvden;
+                  ctrl.tooltips = ctrl.tooltips || {};
+                  var pvalueden = (pvden).toFixed(2) + '%';
+                  ctrl.tooltips[series.label] = pvalueden;
+                  html += '<div class="graph-legend-value">' + pvalueden + '</div>';
+                }
+              } else {
+                html += '<div class="graph-legend-value">/</div>';
+              }
             }
           }
 
